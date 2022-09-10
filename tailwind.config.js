@@ -10,6 +10,8 @@ module.exports = {
         primary: "#091B18",
         secondary: "#0A1F1C",
         "btn-primary": "#036756",
+        "box-color": "#091F1C",
+        "bor-primary": "#004337",
       },
     },
   },
