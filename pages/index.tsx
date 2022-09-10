@@ -47,8 +47,17 @@ const Home: NextPage = () => {
     contract,
     "getTickets"
   );
+  const { data: winnings } = useContractData(
+    contract,
+    "getWinningsForAddress",
+    address
+  );
 
   const { mutateAsync: BuyTickets } = useContractCall(contract, "BuyTickets");
+  const { mutateAsync: WithdrawWinnings } = useContractCall(
+    contract,
+    "WithdrawWinnings"
+  );
 
   useEffect(() => {
     if (!tickets) return;
@@ -93,6 +102,18 @@ const Home: NextPage = () => {
     }
   };
 
+  const onWithdrawWinnings = async () => {
+    const notification = toast.loading(<b>Withdrawing Winnings</b>);
+
+    try {
+      const data = await WithdrawWinnings([{}]);
+      toast.success(<b>Withdraw Success</b>, { id: notification });
+    } catch (e) {
+      toast.error(<b>Failed to Withdraw Winnings</b>, { id: notification });
+      console.error(e);
+    }
+  };
+
   return (
     <div className="bg-primary min-h-screen flex flex-col">
       <Head>
@@ -102,7 +123,24 @@ const Home: NextPage = () => {
       <div className="flex-1">
         <Header />
 
-        {/* The Next Draw Box */}
+        {true && (
+          <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto mt-5">
+            <button
+              onClick={onWithdrawWinnings}
+              className="p-5 bg-gradient-to-b from-orange-500 to-emerald-600 animate-pulse text-center rounded-xl w-full"
+            >
+              <p className="font-bold">Winner Winner Chicken Dinner</p>
+              <p>
+                Total Winnings:{" "}
+                {ethers.utils.formatEther(winnings?.toString()) +
+                  ` ${currency}`}
+              </p>
+              <br />
+              <p className="font-semibold">Click Here to Withdraw</p>
+            </button>
+          </div>
+        )}
+
         <div className="space-y-5 md:space-y-0 m-5 md:flex md:flex-row items-start justify-center md:space-x-5">
           <div className="stats-container">
             <h1 className="text-5xl text-white font-semibold text-center">
