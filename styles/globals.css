@@ -17,4 +17,12 @@
   .countdown-label {
     @apply text-center text-white text-sm uppercase font-bold pt-4;
   }
+
+  .admin-icons {
+    @apply h-6 mx-auto mb-2;
+  }
+
+  .admin-button {
+    @apply bg-box-color p-2 flex-1 rounded-md border-2 border-bor-primary hover:bg-emerald-500/50;
+  }
 }
