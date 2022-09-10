@@ -76,6 +76,9 @@ const Home: NextPage = () => {
                 <p>TBC</p>
               </div>
             </div>
+            <button className="mt-5 w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:text-gray-100 disabled:cursor-not-allowed">
+              Buy Tickets
+            </button>
           </div>
         </div>
       </div>
