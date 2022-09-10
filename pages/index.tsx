@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import toast from "react-hot-toast";
@@ -19,6 +19,7 @@ import CountdownTimer from "../components/CountdownTimer";
 const Home: NextPage = () => {
   const address = useAddress();
   const [quantity, setQuantity] = useState(1);
+  const [userTickets, setUserTickets] = useState(0);
   const { contract, isLoading } = useContract(
     process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
   );
@@ -41,8 +42,25 @@ const Home: NextPage = () => {
     contract,
     "expiration"
   );
+  const { data: tickets, isLoading: ticketsLoading } = useContractData(
+    contract,
+    "getTickets"
+  );
 
   const { mutateAsync: BuyTickets } = useContractCall(contract, "BuyTickets");
+
+  useEffect(() => {
+    if (!tickets) return;
+
+    const totalTickets: string[] = tickets;
+
+    const noOfUserTickets = totalTickets.reduce((total, ticketAddress) => {
+      console.log(address, "🤟", ticketAddress);
+      return ticketAddress == address ? total + 1 : total;
+    }, 0);
+
+    setUserTickets(noOfUserTickets);
+  }, [address]);
 
   if (isLoading) return <Loading />;
   if (!address) return <Login />;
@@ -64,6 +82,7 @@ const Home: NextPage = () => {
       ]);
 
       toast.success(<b>Success</b>, { id: notification });
+      setQuantity(1);
     } catch (e) {
       toast.error(<b>Failed to Buy Tickets</b>, {
         id: notification,
@@ -179,12 +198,37 @@ const Home: NextPage = () => {
                     remainingTickets?.toNumber() === 0
                   }
                   onClick={buyTickets}
-                  className="mt-5 w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:text-gray-100 disabled:cursor-not-allowed"
+                  className="mt-5 font-semibold w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:text-gray-100 disabled:cursor-not-allowed"
                 >
-                  Buy Tickets
+                  Buy {quantity} Tickets for{" "}
+                  {ticketPrice &&
+                    Number(ethers.utils.formatEther(ticketPrice?.toString())) *
+                      quantity}{" "}
+                  {currency}
                 </button>
               )}
             </div>
+            {userTickets > 0 && (
+              <div className="stats">
+                <p>You Have {userTickets} Tickets in this Draw</p>
+                <div className="flex max-w-sm flex-wrap gap-x-2 gap-y-2">
+                  {!ticketsLoading ? (
+                    Array(userTickets)
+                      .fill("")
+                      .map((_, index) => (
+                        <p
+                          className="text-emerald-300 h-20 w-12 bg-emerald-500/30 rounded-lg flex flex-shrink-0 text-xs italic items-center justify-center"
+                          key={index}
+                        >
+                          {index + 1}
+                        </p>
+                      ))
+                  ) : (
+                    <Loader />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
