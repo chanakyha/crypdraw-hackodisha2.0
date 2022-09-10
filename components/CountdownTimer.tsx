@@ -36,7 +36,11 @@ interface Props {
 }
 const Renderer = ({ hours, minutes, seconds, completed }: Props) => (
   <div>
-    {completed && <h2>Ticket Sales are Now Closed</h2>}
+    {completed && (
+      <h2 className="text-xl text-white animate-bounce text-center">
+        Ticket Sales are Now Closed
+      </h2>
+    )}
 
     <div>
       <h3 className="text-white text-sm mb-2 italic">Time Remaining</h3>
