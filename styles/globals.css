@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* for removing the arrow in inout box for type numeric */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 @layer components {
   .stats {
     @apply bg-box-color text-white p-4 flex-1 rounded-md border-2 border-bor-primary;
