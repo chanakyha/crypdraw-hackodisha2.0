@@ -15,6 +15,7 @@ import { BarLoader } from "react-spinners";
 import { ethers } from "ethers";
 import { currency } from "../constants";
 import CountdownTimer from "../components/CountdownTimer";
+import Footer from "../components/Footer";
 
 const Home: NextPage = () => {
   const address = useAddress();
@@ -54,8 +55,9 @@ const Home: NextPage = () => {
 
     const totalTickets: string[] = tickets;
 
+    console.log(totalTickets);
+
     const noOfUserTickets = totalTickets.reduce((total, ticketAddress) => {
-      console.log(address, "🤟", ticketAddress);
       return ticketAddress == address ? total + 1 : total;
     }, 0);
 
@@ -210,8 +212,10 @@ const Home: NextPage = () => {
             </div>
             {userTickets > 0 && (
               <div className="stats">
-                <p>You Have {userTickets} Tickets in this Draw</p>
-                <div className="flex max-w-sm flex-wrap gap-x-2 gap-y-2">
+                <p className="text-lg mt-2">
+                  You Have {userTickets} Tickets in this Draw
+                </p>
+                <div className="flex mt-3 max-w-sm flex-wrap gap-x-2 gap-y-2">
                   {!ticketsLoading ? (
                     Array(userTickets)
                       .fill("")
@@ -232,6 +236,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
