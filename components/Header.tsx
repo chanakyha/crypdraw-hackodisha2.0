@@ -2,15 +2,11 @@ import React from "react";
 import NavButton from "./NavButton";
 import { Bars3BottomRightIcon } from "@heroicons/react/24/solid";
 import { useAddress, useDisconnect } from "@thirdweb-dev/react";
-import Login from "../pages/Login";
 
 const Header = () => {
   const address = useAddress();
   const disconnect = useDisconnect();
 
-  if (!address) {
-    return <Login />;
-  }
   return (
     <header className="grid grid-cols-2 md:grid-cols-5 justify-between items-center p-5">
       <div className="flex items-center space-x-2">
