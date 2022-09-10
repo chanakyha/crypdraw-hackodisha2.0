@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import toast from "react-hot-toast";
 import Header from "../components/Header";
-import { useAddress, useContract, useContractData } from "@thirdweb-dev/react";
+import {
+  useAddress,
+  useContract,
+  useContractData,
+  useContractCall,
+} from "@thirdweb-dev/react";
 import Login from "../components/Login";
 import Loading from "../components/Loading";
 import { BarLoader } from "react-spinners";
@@ -36,8 +42,35 @@ const Home: NextPage = () => {
     "expiration"
   );
 
+  const { mutateAsync: BuyTickets } = useContractCall(contract, "BuyTickets");
+
   if (isLoading) return <Loading />;
   if (!address) return <Login />;
+
+  const buyTickets = async () => {
+    if (!ticketPrice) return;
+
+    const notification = toast.loading(<b>Buying Your Tickets</b>);
+
+    try {
+      const data = await BuyTickets([
+        {
+          value: ethers.utils.parseEther(
+            (
+              Number(ethers.utils.formatEther(ticketPrice)) * quantity
+            ).toString()
+          ),
+        },
+      ]);
+
+      toast.success(<b>Success</b>, { id: notification });
+    } catch (e) {
+      toast.error(<b>Failed to Buy Tickets</b>, {
+        id: notification,
+      });
+      console.error(e);
+    }
+  };
 
   return (
     <div className="bg-primary min-h-screen flex flex-col">
@@ -145,6 +178,7 @@ const Home: NextPage = () => {
                     expiration?.toString() < Date.now().toString() ||
                     remainingTickets?.toNumber() === 0
                   }
+                  onClick={buyTickets}
                   className="mt-5 w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:text-gray-100 disabled:cursor-not-allowed"
                 >
                   Buy Tickets
@@ -152,11 +186,6 @@ const Home: NextPage = () => {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Price Per Ticket Box */}
-        <div>
-          <div></div>
         </div>
       </div>
     </div>
