@@ -12,6 +12,7 @@ module.exports = {
         "btn-primary": "#036756",
         "box-color": "#091F1C",
         "bor-primary": "#004337",
+        timer: "#013F34",
       },
     },
   },

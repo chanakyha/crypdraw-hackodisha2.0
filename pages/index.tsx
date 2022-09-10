@@ -8,6 +8,7 @@ import Loading from "../components/Loading";
 import { BarLoader } from "react-spinners";
 import { ethers } from "ethers";
 import { currency } from "../constants";
+import CountdownTimer from "../components/CountdownTimer";
 
 const Home: NextPage = () => {
   const address = useAddress();
@@ -29,6 +30,11 @@ const Home: NextPage = () => {
 
   const { data: ticketCommission, isLoading: ticketCommissionLoading } =
     useContractData(contract, "ticketCommission");
+
+  const { data: expiration, isLoading: expirationLoading } = useContractData(
+    contract,
+    "expiration"
+  );
 
   if (isLoading) return <Loading />;
   if (!address) return <Login />;
@@ -73,6 +79,9 @@ const Home: NextPage = () => {
             </div>
 
             {/* Coundown Timer */}
+            <div className="mt-5 mb-3">
+              <CountdownTimer />
+            </div>
           </div>
 
           <div className="stats-container space-y-2">
@@ -128,9 +137,19 @@ const Home: NextPage = () => {
                   <p>TBC</p>
                 </div>
               </div>
-              <button className="mt-5 w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:text-gray-100 disabled:cursor-not-allowed">
-                Buy Tickets
-              </button>
+              {expirationLoading && remainingTicketsLoading ? (
+                <Loader />
+              ) : (
+                <button
+                  disabled={
+                    expiration?.toString() < Date.now().toString() ||
+                    remainingTickets?.toNumber() === 0
+                  }
+                  className="mt-5 w-full bg-gradient-to-br from-orange-500 to-emerald-600 px-10 py-5 rounded-md text-white shadow-xl disabled:from-gray-600 disabled:to-gray-600 disabled:text-gray-100 disabled:cursor-not-allowed"
+                >
+                  Buy Tickets
+                </button>
+              )}
             </div>
           </div>
         </div>

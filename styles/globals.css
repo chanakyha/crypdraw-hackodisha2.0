@@ -9,4 +9,12 @@
   .stats-container {
     @apply bg-box-color p-5 rounded-lg border border-bor-primary;
   }
+
+  .countdown {
+    @apply p-8 text-white text-5xl text-center rounded-lg lg:min-w-[150px] bg-timer;
+  }
+
+  .countdown-label {
+    @apply text-center text-white text-sm uppercase font-bold pt-4;
+  }
 }
