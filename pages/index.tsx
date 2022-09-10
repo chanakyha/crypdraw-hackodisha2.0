@@ -1,8 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Header from "../components/Header";
+import { useAddress } from "@thirdweb-dev/react";
 
 const Home: NextPage = () => {
+  const address = useAddress();
+
   return (
     <div className="bg-primary min-h-screen flex flex-col">
       <Head>
