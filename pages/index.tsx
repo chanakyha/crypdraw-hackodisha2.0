@@ -16,6 +16,7 @@ import { ethers } from "ethers";
 import { currency } from "../constants";
 import CountdownTimer from "../components/CountdownTimer";
 import Footer from "../components/Footer";
+import Marquee from "react-fast-marquee";
 
 const Home: NextPage = () => {
   const address = useAddress();
@@ -51,6 +52,11 @@ const Home: NextPage = () => {
     contract,
     "getWinningsForAddress",
     address
+  );
+  const { data: lastWinner } = useContractData(contract, "lastWinner");
+  const { data: lastWinnerAmount } = useContractData(
+    contract,
+    "lastWinnerAmount"
   );
 
   const { mutateAsync: BuyTickets } = useContractCall(contract, "BuyTickets");
@@ -122,8 +128,20 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex-1">
         <Header />
-
-        {true && (
+        <Marquee className="bg-secondary p-5 mb-5" gradient={false} speed={100}>
+          <div className="flex space-x-2 mx-2">
+            <h4 className="text-white font-bold">
+              Last Winner: {lastWinner?.toString()}
+            </h4>
+            <h4 className="text-white font-bold">
+              Previous Winnings:{" "}
+              {lastWinnerAmount &&
+                ethers.utils.formatEther(lastWinnerAmount?.toString()) +
+                  ` ${currency}`}
+            </h4>
+          </div>
+        </Marquee>
+        {winnings > 0 && (
           <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto mt-5">
             <button
               onClick={onWithdrawWinnings}
